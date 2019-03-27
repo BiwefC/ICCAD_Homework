@@ -4,15 +4,6 @@
 # use Tkinter in Python 2, but tkinter in Python 3
 import tkinter as tk
 
-DICE_NUM = 7
-
-planned = [(0, 0, 15, 15),
-           (15, 0, 15, 10),
-           (15, 10, 8, 8),
-           (0, 15, 4, 5),
-           (5, 15, 4, 5),
-           (10, 15, 5, 5),
-           (25, 12, 5, 7)]
 
 def sdist(x, y):
     '''Return squared distance with respect to the (0, 0) origin,
@@ -59,6 +50,7 @@ def cross(range_1, range_2):
         return False
 
 def gen_close_list(planned):
+    (wrap_w, wrap_h) = mpw([])
     test_dices = [[] for i in range(DICE_NUM)]
 
     for i in range(DICE_NUM):
@@ -73,7 +65,7 @@ def gen_close_list(planned):
         for (test_x, test_y, test_w, test_h) in planned:
             y_down = test_y + test_h
             if y == 0:
-                y_down = y_down - 20
+                y_down = y_down - wrap_h
             if y_down == y:
                 if cross(x_range, (test_x, test_x + test_w)):
                     test_dices[i].append((test_x - x_min,0 - test_h, test_w, test_h))
@@ -89,8 +81,8 @@ def gen_close_list(planned):
         test_list = []
         for (test_x, test_y, test_w, test_h) in planned:
             y_up = test_y
-            if y == 20:
-                y_up = y_up + 20
+            if y == wrap_h:
+                y_up = y_up + wrap_h
             if y_up == y:
                 if cross(x_range, (test_x, test_x + test_w)):
                     test_dices[i].append((test_x - x_min, h, test_w, test_h))
@@ -106,7 +98,7 @@ def gen_close_list(planned):
         for (test_x, test_y, test_w, test_h) in planned:
             x_right = test_x + test_w
             if x == 0:
-                x_right = x_right - 30
+                x_right = x_right - wrap_w
             if x_right == x:
                 if cross(y_range, (test_y, test_y + test_h)):
                     test_dices[i].append((0 - test_w,test_y - y_min, test_w, test_h))
@@ -122,8 +114,8 @@ def gen_close_list(planned):
         test_list = []
         for (test_x, test_y, test_w, test_h) in planned:
             x_left = test_x
-            if x == 30:
-                x_left = x_left + 30
+            if x == wrap_w:
+                x_left = x_left + wrap_w
             if x_left == x:
                 if cross(y_range, (test_y, test_y + test_h)):
                     test_dices[i].append((w, test_y - y_min, test_w, test_h))
@@ -132,33 +124,6 @@ def gen_close_list(planned):
 
 
 def close_edge(n, x, y, radius):
-    test_dices = gen_close_list(planned)
-    # test_dices = [[(0, 15, 4, 5),
-    #                (5, 15, 4, 5),
-    #                (10, 15, 5, 5),
-    #                (15, 0, 15, 10),
-    #                (15, 10, 8, 8),
-    #                (-15, 0, 15, 10),
-    #                (-5, 12, 5, 7),
-    #                (0, -5, 4, 5),
-    #                (5, -5, 4, 5),
-    #                (10, -5, 5, 5)],
-    #               [(-15, 0, 15, 15),
-    #                (0, 10, 8, 8),
-    #                (15, 0, 15, 15)],
-    #               [(-15, -10, 15, 15),
-    #                (-5, 5, 5, 5),
-    #                (0, -10, 15, 10)],
-    #               [(0, -15, 15, 15),
-    #                (0, 5, 15, 15),
-    #                (-5, -3, 5, 7)],
-    #               [(-5, -15, 15, 15),
-    #                (-5, 5, 15, 15)],
-    #               [(-10, -15, 15, 15),
-    #                (5, -5, 8, 8),
-    #                (-10, 5, 15, 15)],
-    #               [(5, -12, 15, 15)]]
-
     for (xx, yy, ww, hh) in test_dices[n]:
         xx = xx + x
         yy = yy + y
@@ -189,7 +154,8 @@ def mpw(l):
         wrap_w = max(wrap_w, one_planned[0] + one_planned[2])
         wrap_h = max(wrap_h, one_planned[1] + one_planned[3])
     wrap = (wrap_w, wrap_h)
-
+    WRAP_W = wrap_w
+    WRAP_H = wrap_h
     for t in planned:
         l.append(t)
     ## would you try use 'l = planned' to replace the 2 lines above?
@@ -206,20 +172,6 @@ def field(width=30, height=30, radius=300, det=False):
     but here to demonstrate Python list, we just implement the latter
     '''
     root = tk.Tk()
-
-    string_var = [tk.StringVar() for i in range(7)]
-
-    def show_dice(n):
-        print("show_dice" + str(n))
-        for i in range(DICE_NUM):
-            if i == n:
-                string_var[i].set(len(cv_rect_list[i]))
-                for one_rect in cv_rect_list[i]:
-                    cv.itemconfig(one_rect, fill = 'blue')
-            else:
-                string_var[i].set("")
-                for one_rect in cv_rect_list[i]:
-                    cv.itemconfig(one_rect, fill = 'white')
 
     cv_rect_list = [[] for i in range(DICE_NUM)]
 
@@ -263,24 +215,39 @@ def field(width=30, height=30, radius=300, det=False):
                     else:
                         cv.create_rectangle(x1, y1, x1 + ww, y1 + hh, fill = "red")
 
-    for i in range(DICE_NUM):
-        if i == 0:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(0))
-        elif i == 1:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(1))
-        elif i == 2:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(2))
-        elif i == 3:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(3))
-        elif i == 4:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(4))
-        elif i == 5:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(5))
-        elif i == 6:
-            tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(6))
-        tmp_button.place(rely = i/DICE_NUM, relx = 0)
+    if det:
+        string_var = [tk.StringVar() for i in range(7)]
 
-        tk.Label(cv, textvariable = string_var[i], background = 'white').place(rely = i/DICE_NUM, relx = 0.1)
+        def show_dice(n):
+            print("show_dice" + str(n))
+            for i in range(DICE_NUM):
+                if i == n:
+                    string_var[i].set(len(cv_rect_list[i]))
+                    for one_rect in cv_rect_list[i]:
+                        cv.itemconfig(one_rect, fill = 'blue')
+                else:
+                    string_var[i].set("")
+                    for one_rect in cv_rect_list[i]:
+                        cv.itemconfig(one_rect, fill = 'white')
+
+        for i in range(DICE_NUM):
+            if i == 0:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(0))
+            elif i == 1:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(1))
+            elif i == 2:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(2))
+            elif i == 3:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(3))
+            elif i == 4:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(4))
+            elif i == 5:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(5))
+            elif i == 6:
+                tmp_button = tk.Button(cv, text = ("dice" + str(i)), bg = "blue", command = lambda: show_dice(6))
+            tmp_button.place(rely = i/DICE_NUM, relx = 0)
+
+            tk.Label(cv, textvariable = string_var[i], background = 'white').place(rely = i/DICE_NUM, relx = 0.1)
 
     ## draw a wafer, its center is on canvas center, r=radius
     cv.create_oval(x_c - radius, y_c - radius,
@@ -325,6 +292,16 @@ def show_mpw(n=10):
 # field(det=True, radius=450)
 
 if __name__ == "__main__":
+    planned = [(0, 0, 15, 15),
+               (15, 0, 15, 10),
+               (15, 10, 8, 8),
+               (0, 15, 4, 5),
+               (5, 15, 4, 5),
+               (10, 15, 5, 5),
+               (25, 12, 5, 7)]
+    DICE_NUM = len(planned)
+    test_dices = gen_close_list(planned)
+
     # show_mpw()
     # field()
     # field(24,28,150)
