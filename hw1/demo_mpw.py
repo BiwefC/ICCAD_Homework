@@ -30,9 +30,9 @@ def fully_inside(x, y, w, h, radius):
     '''
     R2 = radius * radius
     ## can we remove '\' here?
-    if sdist(x, y) < R2 and sdist(x + w - 1, y) < R2 \
-    and sdist(x, y + h - 1) < R2 \
-    and sdist(x + w - 1, y + h - 1) < R2:
+    if sdist(x, y) < R2 and sdist(x + w, y) < R2 \
+    and sdist(x, y + h) < R2 \
+    and sdist(x + w, y + h) < R2:
         return True
     else:
         return False
