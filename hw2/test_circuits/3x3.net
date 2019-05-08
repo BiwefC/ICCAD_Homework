@@ -1,0 +1,16 @@
+* a 3X3 resistor network
+r_0_0_0_1 n1 n2 1
+r_0_0_1_0 n1 pin 1
+r_0_1_0_2 n2 n3 1
+r_0_1_1_1 n2 n5 1
+r_0_2_1_2 n3 gnd 1
+r_1_0_1_1 pin n5 1
+r_1_0_2_0 pin n7 1
+r_1_1_1_2 n5 gnd 1
+r_1_1_2_1 n5 n8 1
+r_1_2_2_2 gnd n9 1
+r_2_0_2_1 n7 n8 1
+r_2_1_2_2 n8 n9 1
+
+vin pin gnd 1
+vcomp n2 gnd 0.6

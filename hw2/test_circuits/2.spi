@@ -1,0 +1,9 @@
+*demo circuit 2
+i2 c b 4
+r1 a b 3
+r2  b  c 5
+i1 d a 2
+r3 b  d  7
+r4 d GND 11
+r5 d 	c 13
+r6 c gnd 17

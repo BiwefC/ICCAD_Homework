@@ -1,0 +1,17 @@
+* A 1 ohm line constructed cube
+* ui, di are 4 nodes up and 4 nodes down
+* u3 is connected to Ground, a 1A current is injected into d1
+ru12 u1 u2 1
+ru23 u2 gnd 1
+ru34 gnd u4 1
+ru41 u4 u1 1
+rd12 d1 d2 1
+rd23 d2 d3 1
+rd34 d3 d4 1
+rd41 d4 d1 1
+rv1 u1 d1 1
+rv2 u2 d2 1
+rv3 gnd d3 1
+rv4 u4 d4 1
+
+i1 GND d1 1
