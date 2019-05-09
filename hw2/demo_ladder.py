@@ -83,10 +83,17 @@ def ladderWave(N=10, endTime=1000, deltaTime=0.01, tpdMode=False):
     B = deltaTime * np.dot(np.linalg.inv(C), i_source)
 
     ## Give an analysis on the above formula, and try Forward Euler?
+    ## for Forward Euler:
+    ## [vt1] = (1 + deltaT * C-1 * G) * vt0 + deltaT * C-1 * i_source
+    ## Rewrite into:
+    ## [vt1] = A * vt0 + B
+    A_f = np.eye(N) + deltaTime * np.dot(np.linalg.inv(C), G)
+    B_f = deltaTime * np.dot(np.linalg.inv(C), i_source)
 
     for tt in time:
         i += 1
         v_nodes = np.dot(Ainv, v_nodes + B)
+        # v_nodes = np.dot(A_f, v_nodes) + B_f
 
         ## Add the last stage voltage to vout, for this moment (time point tt)
         vout.append(v_nodes[N-1][0])
